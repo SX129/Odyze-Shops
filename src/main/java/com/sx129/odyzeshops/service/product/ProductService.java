@@ -45,14 +45,14 @@ public class ProductService implements IProductService{
 
     @Override
     public Product getProductById(Long id) {
-        return productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException("Product with id: " + id + " not found"));
+        return productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException("Product not found with id: " + id));
     }
 
     @Override
     public void deleteProductById(Long id) {
         productRepository.findById(id)
                 .ifPresentOrElse(productRepository::delete,
-                        () -> {throw new ProductNotFoundException("Product with id: " + id + " not found");});
+                        () -> {throw new ProductNotFoundException("Product not found with id: " + id);});
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ProductService implements IProductService{
         return productRepository.findById(productId)
                 .map(existingProduct -> updateExistingProduct(existingProduct, request))
                 .map(productRepository::save)
-                .orElseThrow(() -> new ProductNotFoundException("Product with id: " + productId + " not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
     }
 
     private Product updateExistingProduct(Product existingProduct, UpdateProductRequest request) {
