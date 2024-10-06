@@ -141,7 +141,7 @@ public class ProductController {
     }
 
     @GetMapping("/product/{category}/all/products")
-    public ResponseEntity<ApiResponse> getProductsByCategory(@RequestParam String category){
+    public ResponseEntity<ApiResponse> getProductsByCategory(@PathVariable String category){
         try {
             List<Product> products = productService.getProductsByCategory(category);
 
