@@ -157,4 +157,15 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/product/count/by-brand/and-name")
+    public ResponseEntity<ApiResponse> countProductsByBrandAndName(@RequestParam String brandName, @RequestParam String productName){
+        try {
+            Long count = productService.countProductsByBrandAndName(brandName, productName);
+            return ResponseEntity.ok(new ApiResponse("Products count retrieved successfully", count));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
 }
