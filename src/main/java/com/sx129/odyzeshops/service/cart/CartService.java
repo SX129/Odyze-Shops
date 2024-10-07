@@ -4,6 +4,7 @@ import com.sx129.odyzeshops.exceptions.ResourceNotFoundException;
 import com.sx129.odyzeshops.model.Cart;
 import com.sx129.odyzeshops.repository.CartItemRepository;
 import com.sx129.odyzeshops.repository.CartRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class CartService implements ICartService {
         return cartRepository.save(cart);
     }
 
+    @Transactional
     @Override
     public void clearCart(Long id) {
         Cart cart = getCart(id);
