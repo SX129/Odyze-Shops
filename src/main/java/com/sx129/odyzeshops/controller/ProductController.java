@@ -47,7 +47,9 @@ public class ProductController {
     public ResponseEntity<ApiResponse> addProduct(@RequestBody AddProductRequest product){
         try {
             Product theProduct = productService.addProduct(product);
-            return ResponseEntity.ok(new ApiResponse("Successfully added product", theProduct));
+            ProductDto productDto = productService.convertToDto(theProduct);
+
+            return ResponseEntity.ok(new ApiResponse("Successfully added product", productDto));
         } catch (AlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(e.getMessage(), null));
@@ -58,7 +60,9 @@ public class ProductController {
     public ResponseEntity<ApiResponse> updateProduct(@RequestBody UpdateProductRequest request, @PathVariable Long productId){
         try {
             Product updatedProduct = productService.updateProduct(request, productId);
-            return ResponseEntity.ok(new ApiResponse("Successfully updated product", updatedProduct));
+            ProductDto productDto = productService.convertToDto(updatedProduct);
+
+            return ResponseEntity.ok(new ApiResponse("Successfully updated product", productDto));
         } catch (ProductNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse(e.getMessage(), null));
@@ -69,7 +73,7 @@ public class ProductController {
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long productId){
         try {
             productService.deleteProductById(productId);
-            return ResponseEntity.ok(new ApiResponse("Successfully deleted product", null));
+            return ResponseEntity.ok(new ApiResponse("Successfully deleted product", productId));
         } catch (ProductNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse(e.getMessage(), null));
