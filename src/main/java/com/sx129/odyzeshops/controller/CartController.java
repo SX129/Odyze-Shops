@@ -30,13 +30,23 @@ public class CartController {
 
     @DeleteMapping("/{cartId}/clear")
     public ResponseEntity<ApiResponse> clearCart(@PathVariable Long cartId){
-        cartService.clearCart(cartId);
-        return ResponseEntity.ok(new ApiResponse("Cart cleared successfully", null));
+        try {
+            cartService.clearCart(cartId);
+            return ResponseEntity.ok(new ApiResponse("Cart cleared successfully", null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
     }
 
     @GetMapping("/{cartId}/cart/total-price")
     public ResponseEntity<ApiResponse> getTotalAmount(@PathVariable Long cartId){
-        BigDecimal totalPrice = cartService.getTotalPrice(cartId);
-        return ResponseEntity.ok(new ApiResponse("Total price retrieved successfully", totalPrice));
+        try {
+            BigDecimal totalPrice = cartService.getTotalPrice(cartId);
+            return ResponseEntity.ok(new ApiResponse("Total price retrieved successfully", totalPrice));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
     }
 }
