@@ -1,13 +1,18 @@
 package com.sx129.odyzeshops.service.product;
 
+import com.sx129.odyzeshops.dto.ImageDto;
+import com.sx129.odyzeshops.dto.ProductDto;
 import com.sx129.odyzeshops.exceptions.ProductNotFoundException;
 import com.sx129.odyzeshops.model.Category;
+import com.sx129.odyzeshops.model.Image;
 import com.sx129.odyzeshops.model.Product;
 import com.sx129.odyzeshops.repository.CategoryRepository;
+import com.sx129.odyzeshops.repository.ImageRepository;
 import com.sx129.odyzeshops.repository.ProductRepository;
 import com.sx129.odyzeshops.request.AddProductRequest;
 import com.sx129.odyzeshops.request.UpdateProductRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +23,8 @@ import java.util.Optional;
 public class ProductService implements IProductService{
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ImageRepository imageRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public Product addProduct(AddProductRequest request) {
@@ -109,5 +116,20 @@ public class ProductService implements IProductService{
     @Override
     public Long countProductsByBrandAndName(String brand, String name) {
         return productRepository.countByBrandAndName(brand, name);
+    }
+
+    @Override
+    public List<ProductDto> getConvertedProducts(List<Product> products) {
+        return products.stream().map(this::convertToDto).toList();
+    }
+
+    @Override
+    public ProductDto convertToDto(Product product) {
+        ProductDto productDto = modelMapper.map(product, ProductDto.class);
+        List<Image> images = imageRepository.findByProductId(product.getId());
+        List<ImageDto> imageDtos = images.stream().map(image -> modelMapper.map(image, ImageDto.class)).toList();
+
+        productDto.setImages(imageDtos);
+        return productDto;
     }
 }
