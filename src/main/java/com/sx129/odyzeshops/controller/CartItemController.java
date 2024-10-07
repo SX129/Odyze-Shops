@@ -3,6 +3,7 @@ package com.sx129.odyzeshops.controller;
 import com.sx129.odyzeshops.exceptions.ResourceNotFoundException;
 import com.sx129.odyzeshops.response.ApiResponse;
 import com.sx129.odyzeshops.service.cart.ICartItemService;
+import com.sx129.odyzeshops.service.cart.ICartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +14,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("${api.prefix}/cartItems")
 public class CartItemController {
     private final ICartItemService cartItemService;
+    private final ICartService cartService;
 
     @PostMapping("/item/add")
     public ResponseEntity<ApiResponse> addItemToCart(@RequestParam Long cartId,
                                                      @RequestParam Long productId,
                                                      @RequestParam Integer quantity){
         try {
+            if(cartId == null){
+                cartId = cartService.initializeNewCart();
+            }
+
             cartItemService.addItemToCart(cartId, productId, quantity);
             return ResponseEntity.ok(new ApiResponse("Item added to cart successfully", null));
         } catch (ResourceNotFoundException e) {
