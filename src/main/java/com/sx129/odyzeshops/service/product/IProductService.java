@@ -1,5 +1,6 @@
 package com.sx129.odyzeshops.service.product;
 
+import com.sx129.odyzeshops.dto.ProductDto;
 import com.sx129.odyzeshops.model.Product;
 import com.sx129.odyzeshops.request.AddProductRequest;
 import com.sx129.odyzeshops.request.UpdateProductRequest;
@@ -19,4 +20,7 @@ public interface IProductService {
     List<Product> getProductsByBrandAndName(String brand, String name);
     Long countProductsByBrandAndName(String brand, String name);
 
+    List<ProductDto> getConvertedProducts(List<Product> products);
+
+    ProductDto convertToDto(Product product);
 }
