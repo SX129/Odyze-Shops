@@ -1,5 +1,6 @@
 package com.sx129.odyzeshops.service.order;
 
+import com.sx129.odyzeshops.dto.OrderDto;
 import com.sx129.odyzeshops.enums.OrderStatus;
 import com.sx129.odyzeshops.exceptions.ResourceNotFoundException;
 import com.sx129.odyzeshops.model.Cart;
@@ -10,6 +11,7 @@ import com.sx129.odyzeshops.repository.OrderRepository;
 import com.sx129.odyzeshops.repository.ProductRepository;
 import com.sx129.odyzeshops.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,6 +25,7 @@ public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final CartService cartService;
+    private final ModelMapper modelMapper;
 
     @Override
     public Order placeOrder(Long userId) {
@@ -75,5 +78,9 @@ public class OrderService implements IOrderService {
     @Override
     public List<Order> getUserOrders(Long userId){
         return orderRepository.findByUserId(userId);
+    }
+
+    private OrderDto convertToDto(Order order){
+        return modelMapper.map(order, OrderDto.class);
     }
 }
