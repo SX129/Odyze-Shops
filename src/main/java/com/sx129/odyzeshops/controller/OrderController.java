@@ -1,5 +1,6 @@
 package com.sx129.odyzeshops.controller;
 
+import com.sx129.odyzeshops.dto.OrderDto;
 import com.sx129.odyzeshops.exceptions.ResourceNotFoundException;
 import com.sx129.odyzeshops.model.Order;
 import com.sx129.odyzeshops.response.ApiResponse;
@@ -30,7 +31,7 @@ public class OrderController {
     @GetMapping("/{orderId}/order")
     public ResponseEntity<ApiResponse> getOrderById(@PathVariable Long orderId){
         try {
-            Order order = orderService.getOrder(orderId);
+            OrderDto order = orderService.getOrder(orderId);
             return ResponseEntity.ok(new ApiResponse("Order retrieved successfully", order));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
@@ -40,7 +41,7 @@ public class OrderController {
     @GetMapping("/{userId}/orders")
     public ResponseEntity<ApiResponse> getUserOrders(@PathVariable Long userId){
         try {
-            List<Order> order = orderService.getUserOrders(userId);
+            List<OrderDto> order = orderService.getUserOrders(userId);
             return ResponseEntity.ok(new ApiResponse("Orders retrieved successfully", order));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
