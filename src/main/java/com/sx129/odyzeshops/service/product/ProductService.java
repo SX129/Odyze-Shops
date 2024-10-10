@@ -2,6 +2,7 @@ package com.sx129.odyzeshops.service.product;
 
 import com.sx129.odyzeshops.dto.ImageDto;
 import com.sx129.odyzeshops.dto.ProductDto;
+import com.sx129.odyzeshops.exceptions.AlreadyExistsException;
 import com.sx129.odyzeshops.exceptions.ProductNotFoundException;
 import com.sx129.odyzeshops.model.Category;
 import com.sx129.odyzeshops.model.Image;
@@ -28,6 +29,10 @@ public class ProductService implements IProductService{
 
     @Override
     public Product addProduct(AddProductRequest request) {
+        if(productExists(request.getName(), request.getBrand())){
+            throw new AlreadyExistsException("Product already exists with name: " + request.getName() + " and brand: " + request.getBrand());
+        }
+
         // Check if the category is valid
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName())).orElseGet(() -> {
             Category newCategory = new Category(request.getCategory().getName());
@@ -37,6 +42,10 @@ public class ProductService implements IProductService{
         request.setCategory(category);
 
         return productRepository.save(createProduct(request, category));
+    }
+
+    private boolean productExists(String name, String brand){
+        return productRepository.existsByNameAndBrand(name, brand);
     }
 
     private Product createProduct(AddProductRequest request, Category category) {
