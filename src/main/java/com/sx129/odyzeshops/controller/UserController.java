@@ -1,5 +1,6 @@
 package com.sx129.odyzeshops.controller;
 
+import com.sx129.odyzeshops.dto.UserDto;
 import com.sx129.odyzeshops.exceptions.AlreadyExistsException;
 import com.sx129.odyzeshops.exceptions.ResourceNotFoundException;
 import com.sx129.odyzeshops.model.User;
@@ -22,7 +23,9 @@ public class UserController {
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long id){
         try {
             User user = userService.getUserById(id);
-            return ResponseEntity.ok(new ApiResponse("User fetched successfully", user));
+            UserDto userDto = userService.convertUserToDto(user);
+
+            return ResponseEntity.ok(new ApiResponse("User fetched successfully", userDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
@@ -32,7 +35,9 @@ public class UserController {
     public ResponseEntity<ApiResponse> createUser(@RequestBody CreateUserRequest request){
         try {
             User user = userService.createUser(request);
-            return ResponseEntity.ok(new ApiResponse("User created successfully", user));
+            UserDto userDto = userService.convertUserToDto(user);
+
+            return ResponseEntity.ok(new ApiResponse("User created successfully", userDto));
         } catch (AlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
@@ -42,7 +47,9 @@ public class UserController {
     public ResponseEntity<ApiResponse> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request){
         try {
             User user = userService.updateUser(request, id);
-            return ResponseEntity.ok(new ApiResponse("User updated successfully", user));
+            UserDto userDto = userService.convertUserToDto(user);
+
+            return ResponseEntity.ok(new ApiResponse("User updated successfully", userDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
